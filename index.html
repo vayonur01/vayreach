@@ -26,7 +26,7 @@ button {background:#ff0033;color:#fff;border:none;padding:4px 8px;cursor:pointer
 </table>
 
 <script>
-const API_BASE = "https://<VERCEL_PROJE_ADI>.vercel.app/api";
+const API_BASE = "https://vayreach.vercel.app/api";
 
 async function loadUsers(){
     const res = await fetch(`${API_BASE}/get_users`);
@@ -55,4 +55,5 @@ loadUsers();
 setInterval(loadUsers,5000);
 </script>
 </body>
+
 </html>
