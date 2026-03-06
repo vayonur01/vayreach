@@ -4,76 +4,69 @@
 <meta charset="UTF-8">
 <title>VAYONUR LAUNCHER PANEL</title>
 <style>
-  body { background: #0d0d0d; color: #fff; font-family: Consolas, monospace; }
-  h1 { color: #00ff99; text-align: center; }
-  table { width: 80%; margin: 20px auto; border-collapse: collapse; }
-  th, td { border: 1px solid #555; padding: 8px; text-align: center; }
-  th { background: #111; }
-  tr:nth-child(even) { background: #1a1a1a; }
-  button { padding: 5px 10px; background: #ff0033; border: none; color: white; cursor: pointer; }
-  button:hover { background: #ff5555; }
+body { background: #0d0d0d; color: #fff; font-family: Consolas, monospace; }
+h1 { color: #00ff99; text-align: center; }
+table { width: 80%; margin: 20px auto; border-collapse: collapse; }
+th, td { border: 1px solid #555; padding: 8px; text-align: center; }
+th { background: #111; }
+tr:nth-child(even) { background: #1a1a1a; }
+button { padding: 5px 10px; background: #ff0033; border: none; color: white; cursor: pointer; }
+button:hover { background: #ff5555; }
 </style>
 </head>
 <body>
 <h1>VAYONUR LAUNCHER PANEL</h1>
 <table>
-  <thead>
-    <tr>
-      <th>Bilgisayar</th>
-      <th>Kullanılan Kod</th>
-      <th>Süre (saat)</th>
-      <th>Banla</th>
-    </tr>
-  </thead>
-  <tbody id="users-table">
-    <tr><td colspan="4">Yükleniyor...</td></tr>
-  </tbody>
+<thead>
+<tr>
+<th>Bilgisayar</th>
+<th>Kullanılan Kod</th>
+<th>Süre (saat)</th>
+<th>Banla</th>
+</tr>
+</thead>
+<tbody id="users-table">
+<tr><td colspan="4">Yükleniyor...</td></tr>
+</tbody>
 </table>
 
-<script>
-const API_BASE = "https://vayreach.vercel.app/api";
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-// Kullanıcıları getir ve tabloyu güncelle
+const firebaseConfig = {
+  apiKey: "AIzaSyDF3tw3ukW6gjTDEhj_Gz4D1qgB-WB5BU8",
+  authDomain: "hwid-8fb7e.firebaseapp.com",
+  projectId: "hwid-8fb7e",
+  storageBucket: "hwid-8fb7e.firebasestorage.app",
+  messagingSenderId: "99269272565",
+  appId: "1:99269272565:web:1fed96706775c81f7436bc",
+  measurementId: "G-WV3585JPKE"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 async function fetchUsers() {
-  try {
-    const res = await fetch(`${API_BASE}/get_users`);
-    const data = await res.json();
-    const tbody = document.getElementById("users-table");
-    tbody.innerHTML = "";
-    data.forEach(user => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${user.computer}</td>
-        <td>${user.code}</td>
-        <td>${user.duration}</td>
-        <td><button onclick="banUser('${user.computer}')">Banla</button></td>
-      `;
-      tbody.appendChild(tr);
-    });
-  } catch (e) {
-    console.error(e);
-    document.getElementById("users-table").innerHTML = `<tr><td colspan="4">Veri çekilemedi!</td></tr>`;
-  }
+  const snapshot = await getDocs(collection(db, "users"));
+  const tbody = document.getElementById("users-table");
+  tbody.innerHTML = "";
+  snapshot.forEach(docSnap => {
+    const u = docSnap.data();
+    tbody.innerHTML += `<tr>
+      <td>${docSnap.id}</td>
+      <td>${u.code}</td>
+      <td>${u.duration}</td>
+      <td>${u.banned ? "BANLI" : `<button onclick="banUser('${docSnap.id}')">Banla</button>`}</td>
+    </tr>`;
+  });
 }
 
-// Kullanıcıyı banla
 async function banUser(computer) {
-  if(!confirm(`${computer} bilgisayarını banlamak istediğinizden emin misiniz?`)) return;
-  try {
-    await fetch(`${API_BASE}/ban_user`, {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({computer})
-    });
-    alert("Ban işlemi yapıldı!");
-    fetchUsers();
-  } catch (e) {
-    console.error(e);
-    alert("Ban yapılamadı!");
-  }
+  await updateDoc(doc(db, "users", computer), { banned: true });
+  fetchUsers();
 }
 
-// İlk yükleme ve her 5 saniyede yenile
 fetchUsers();
 setInterval(fetchUsers, 5000);
 </script>
