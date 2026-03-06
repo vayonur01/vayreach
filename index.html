@@ -2,58 +2,80 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>Launcher Panel</title>
+<title>VAYONUR LAUNCHER PANEL</title>
 <style>
-body {background:#111;color:#fff;font-family:Consolas;}
-table {border-collapse: collapse;width:100%;}
-th, td {border:1px solid #444;padding:8px;text-align:center;}
-button {background:#ff0033;color:#fff;border:none;padding:4px 8px;cursor:pointer;}
+  body { background: #0d0d0d; color: #fff; font-family: Consolas, monospace; }
+  h1 { color: #00ff99; text-align: center; }
+  table { width: 80%; margin: 20px auto; border-collapse: collapse; }
+  th, td { border: 1px solid #555; padding: 8px; text-align: center; }
+  th { background: #111; }
+  tr:nth-child(even) { background: #1a1a1a; }
+  button { padding: 5px 10px; background: #ff0033; border: none; color: white; cursor: pointer; }
+  button:hover { background: #ff5555; }
 </style>
 </head>
 <body>
-<h2>Aktif Kullanıcılar</h2>
-<table id="usersTable">
+<h1>VAYONUR LAUNCHER PANEL</h1>
+<table>
   <thead>
     <tr>
       <th>Bilgisayar</th>
-      <th>Kod</th>
-      <th>Süre</th>
-      <th>Durum</th>
+      <th>Kullanılan Kod</th>
+      <th>Süre (saat)</th>
       <th>Banla</th>
     </tr>
   </thead>
-  <tbody></tbody>
+  <tbody id="users-table">
+    <tr><td colspan="4">Yükleniyor...</td></tr>
+  </tbody>
 </table>
 
 <script>
 const API_BASE = "https://vayreach.vercel.app/api";
 
-async function loadUsers(){
+// Kullanıcıları getir ve tabloyu güncelle
+async function fetchUsers() {
+  try {
     const res = await fetch(`${API_BASE}/get_users`);
     const data = await res.json();
-    const tbody = document.querySelector("#usersTable tbody");
-    tbody.innerHTML="";
-    data.users.forEach(u=>{
-        const tr = document.createElement("tr");
-        tr.innerHTML=`<td>${u.computer}</td>
-                      <td>${u.code}</td>
-                      <td>${u.duration} saat</td>
-                      <td>${u.status}</td>
-                      <td><button onclick="banUser('${u.computer}')">Banla</button></td>`;
-        tbody.appendChild(tr);
+    const tbody = document.getElementById("users-table");
+    tbody.innerHTML = "";
+    data.forEach(user => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${user.computer}</td>
+        <td>${user.code}</td>
+        <td>${user.duration}</td>
+        <td><button onclick="banUser('${user.computer}')">Banla</button></td>
+      `;
+      tbody.appendChild(tr);
     });
+  } catch (e) {
+    console.error(e);
+    document.getElementById("users-table").innerHTML = `<tr><td colspan="4">Veri çekilemedi!</td></tr>`;
+  }
 }
-async function banUser(computer){
-    await fetch(`${API_BASE}/ban_user`,{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({computer})
+
+// Kullanıcıyı banla
+async function banUser(computer) {
+  if(!confirm(`${computer} bilgisayarını banlamak istediğinizden emin misiniz?`)) return;
+  try {
+    await fetch(`${API_BASE}/ban_user`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({computer})
     });
-    loadUsers();
+    alert("Ban işlemi yapıldı!");
+    fetchUsers();
+  } catch (e) {
+    console.error(e);
+    alert("Ban yapılamadı!");
+  }
 }
-loadUsers();
-setInterval(loadUsers,5000);
+
+// İlk yükleme ve her 5 saniyede yenile
+fetchUsers();
+setInterval(fetchUsers, 5000);
 </script>
 </body>
-
 </html>
