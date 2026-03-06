@@ -53,12 +53,12 @@
         </tr>
     </table>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
+    <!-- Firebase JS (modüler v9) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-    <script>
-        // Firebase ayarları
+        // Firebase ayarları (Python launcher ile aynı proje)
         const firebaseConfig = {
             apiKey: "AIzaSyDF3tw3ukW6gjTDEhj_Gz4D1qgB-WB5BU8",
             authDomain: "hwid-8fb7e.firebaseapp.com",
@@ -69,41 +69,45 @@
             measurementId: "G-WV3585JPKE"
         };
 
-        // Firebase başlat
-        const app = firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-        // Tabloyu doldur
-        function loadUsers() {
+        // Kullanıcıları çekip tabloya ekle
+        async function loadUsers() {
             const table = document.getElementById("usersTable");
+            const usersCol = collection(db, "users");
+            const q = query(usersCol, orderBy("last_login", "desc"));
 
-            db.collection("users").orderBy("last_login", "desc").get().then(snapshot => {
+            try {
+                const snapshot = await getDocs(q);
                 snapshot.forEach(doc => {
                     const data = doc.data();
                     const row = table.insertRow();
                     row.insertCell(0).innerText = doc.id; // Bilgisayar adı
                     row.insertCell(1).innerText = data.code;
-                    row.insertCell(2).innerText = data.duration == Infinity ? "UNLIMITED" : data.duration + " saat";
+                    row.insertCell(2).innerText = data.duration === Infinity ? "UNLIMITED" : data.duration + " saat";
                     row.insertCell(3).innerText = data.last_login;
                     const banCell = row.insertCell(4);
                     banCell.innerText = data.banned ? "EVET" : "HAYIR";
-                    if (data.banned) banCell.classList.add("banned");
+                    if(data.banned) banCell.classList.add("banned");
                 });
-            }).catch(err => {
+            } catch(err) {
                 console.error("Veri çekilemedi:", err);
-            });
+            }
+        }
+
+        // Tabloyu temizleyip tekrar yükle
+        async function refreshTable() {
+            const table = document.getElementById("usersTable");
+            while(table.rows.length > 1) table.deleteRow(1); // başlık satırı hariç
+            await loadUsers();
         }
 
         // Sayfa yüklendiğinde tabloyu doldur
-        window.onload = loadUsers;
+        window.onload = refreshTable;
 
-        // 30 saniyede bir güncelle
-        setInterval(() => {
-            // önce tabloyu temizle
-            const table = document.getElementById("usersTable");
-            while(table.rows.length > 1) table.deleteRow(1);
-            loadUsers();
-        }, 30000);
+        // 30 saniyede bir tabloyu güncelle
+        setInterval(refreshTable, 30000);
     </script>
 </body>
 </html>
