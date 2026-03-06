@@ -1,74 +1,109 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<title>VAYONUR LAUNCHER PANEL</title>
-<style>
-body { background: #0d0d0d; color: #fff; font-family: Consolas, monospace; }
-h1 { color: #00ff99; text-align: center; }
-table { width: 80%; margin: 20px auto; border-collapse: collapse; }
-th, td { border: 1px solid #555; padding: 8px; text-align: center; }
-th { background: #111; }
-tr:nth-child(even) { background: #1a1a1a; }
-button { padding: 5px 10px; background: #ff0033; border: none; color: white; cursor: pointer; }
-button:hover { background: #ff5555; }
-</style>
+    <meta charset="UTF-8">
+    <title>VAYONUR Kullanıcılar</title>
+    <style>
+        body {
+            background-color: #0d0d0d;
+            color: #fff;
+            font-family: Consolas, monospace;
+            padding: 20px;
+        }
+        h1 {
+            color: #00ff99;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #777;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #111111;
+            color: #00ff99;
+        }
+        tr:nth-child(even) {
+            background-color: #1a1a1a;
+        }
+        tr:nth-child(odd) {
+            background-color: #111111;
+        }
+        td.banned {
+            color: #ff0033;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-<h1>VAYONUR LAUNCHER PANEL</h1>
-<table>
-<thead>
-<tr>
-<th>Bilgisayar</th>
-<th>Kullanılan Kod</th>
-<th>Süre (saat)</th>
-<th>Banla</th>
-</tr>
-</thead>
-<tbody id="users-table">
-<tr><td colspan="4">Yükleniyor...</td></tr>
-</tbody>
-</table>
+    <h1>VAYONUR LAUNCHER Kullanıcılar</h1>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    <table id="usersTable">
+        <tr>
+            <th>Bilgisayar</th>
+            <th>Kod</th>
+            <th>Süre</th>
+            <th>Son Giriş</th>
+            <th>Banlı mı?</th>
+        </tr>
+    </table>
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDF3tw3ukW6gjTDEhj_Gz4D1qgB-WB5BU8",
-  authDomain: "hwid-8fb7e.firebaseapp.com",
-  projectId: "hwid-8fb7e",
-  storageBucket: "hwid-8fb7e.firebasestorage.app",
-  messagingSenderId: "99269272565",
-  appId: "1:99269272565:web:1fed96706775c81f7436bc",
-  measurementId: "G-WV3585JPKE"
-};
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+    <script>
+        // Firebase ayarları
+        const firebaseConfig = {
+            apiKey: "AIzaSyDF3tw3ukW6gjTDEhj_Gz4D1qgB-WB5BU8",
+            authDomain: "hwid-8fb7e.firebaseapp.com",
+            projectId: "hwid-8fb7e",
+            storageBucket: "hwid-8fb7e.firebasestorage.app",
+            messagingSenderId: "99269272565",
+            appId: "1:99269272565:web:1fed96706775c81f7436bc",
+            measurementId: "G-WV3585JPKE"
+        };
 
-async function fetchUsers() {
-  const snapshot = await getDocs(collection(db, "users"));
-  const tbody = document.getElementById("users-table");
-  tbody.innerHTML = "";
-  snapshot.forEach(docSnap => {
-    const u = docSnap.data();
-    tbody.innerHTML += `<tr>
-      <td>${docSnap.id}</td>
-      <td>${u.code}</td>
-      <td>${u.duration}</td>
-      <td>${u.banned ? "BANLI" : `<button onclick="banUser('${docSnap.id}')">Banla</button>`}</td>
-    </tr>`;
-  });
-}
+        // Firebase başlat
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-async function banUser(computer) {
-  await updateDoc(doc(db, "users", computer), { banned: true });
-  fetchUsers();
-}
+        // Tabloyu doldur
+        function loadUsers() {
+            const table = document.getElementById("usersTable");
 
-fetchUsers();
-setInterval(fetchUsers, 5000);
-</script>
+            db.collection("users").orderBy("last_login", "desc").get().then(snapshot => {
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const row = table.insertRow();
+                    row.insertCell(0).innerText = doc.id; // Bilgisayar adı
+                    row.insertCell(1).innerText = data.code;
+                    row.insertCell(2).innerText = data.duration == Infinity ? "UNLIMITED" : data.duration + " saat";
+                    row.insertCell(3).innerText = data.last_login;
+                    const banCell = row.insertCell(4);
+                    banCell.innerText = data.banned ? "EVET" : "HAYIR";
+                    if (data.banned) banCell.classList.add("banned");
+                });
+            }).catch(err => {
+                console.error("Veri çekilemedi:", err);
+            });
+        }
+
+        // Sayfa yüklendiğinde tabloyu doldur
+        window.onload = loadUsers;
+
+        // 30 saniyede bir güncelle
+        setInterval(() => {
+            // önce tabloyu temizle
+            const table = document.getElementById("usersTable");
+            while(table.rows.length > 1) table.deleteRow(1);
+            loadUsers();
+        }, 30000);
+    </script>
 </body>
 </html>
