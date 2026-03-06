@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Launcher Panel</title>
+<style>
+body {background:#111;color:#fff;font-family:Consolas;}
+table {border-collapse: collapse;width:100%;}
+th, td {border:1px solid #444;padding:8px;text-align:center;}
+button {background:#ff0033;color:#fff;border:none;padding:4px 8px;cursor:pointer;}
+</style>
+</head>
+<body>
+<h2>Aktif Kullanıcılar</h2>
+<table id="usersTable">
+  <thead>
+    <tr>
+      <th>Bilgisayar</th>
+      <th>Kod</th>
+      <th>Süre</th>
+      <th>Durum</th>
+      <th>Banla</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+const API_BASE = "https://<VERCEL_PROJE_ADI>.vercel.app/api";
+
+async function loadUsers(){
+    const res = await fetch(`${API_BASE}/get_users`);
+    const data = await res.json();
+    const tbody = document.querySelector("#usersTable tbody");
+    tbody.innerHTML="";
+    data.users.forEach(u=>{
+        const tr = document.createElement("tr");
+        tr.innerHTML=`<td>${u.computer}</td>
+                      <td>${u.code}</td>
+                      <td>${u.duration} saat</td>
+                      <td>${u.status}</td>
+                      <td><button onclick="banUser('${u.computer}')">Banla</button></td>`;
+        tbody.appendChild(tr);
+    });
+}
+async function banUser(computer){
+    await fetch(`${API_BASE}/ban_user`,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({computer})
+    });
+    loadUsers();
+}
+loadUsers();
+setInterval(loadUsers,5000);
+</script>
+</body>
+</html>
