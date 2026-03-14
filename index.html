@@ -1,9 +1,11 @@
-```html
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
 <title>VayReach | Ultimate Edition</title>
 
 <link rel="icon" href="favicon.jpg">
@@ -14,11 +16,14 @@
 
 <style>
 
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+
 body{
+font-family:'Plus Jakarta Sans',sans-serif;
 background:#050505;
 color:white;
-font-family:sans-serif;
 overflow-x:hidden;
+min-height:100vh;
 user-select:none;
 }
 
@@ -28,7 +33,7 @@ top:0;
 left:0;
 width:100%;
 height:100%;
-background:radial-gradient(circle at 50% 30%,#111 0%,#050505 100%);
+background: radial-gradient(circle at 50% 30%, #111 0%, #050505 100%);
 z-index:-1;
 }
 
@@ -38,31 +43,54 @@ background:rgba(0,0,0,0.6);
 border-bottom:1px solid rgba(255,255,255,0.05);
 }
 
-.page-section{
-display:none;
-}
-
-.page-section.active{
-display:block;
+.premium-text{
+background:linear-gradient(180deg,#fff 40%,#666 100%);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
 }
 
 .glass-card{
 background:rgba(255,255,255,0.02);
+backdrop-filter:blur(20px);
 border:1px solid rgba(255,255,255,0.05);
-border-radius:30px;
-padding:30px;
-transition:.3s;
+transition:0.4s;
 }
 
 .glass-card:hover{
-transform:translateY(-5px);
 border-color:rgba(255,255,255,0.1);
+transform:translateY(-5px);
+}
+
+#notification-container{
+position:fixed;
+top:100px;
+right:20px;
+z-index:9999;
+}
+
+.notification{
+background:rgba(255,255,255,0.03);
+backdrop-filter:blur(15px);
+border:1px solid rgba(255,255,255,0.1);
+padding:15px 25px;
+border-radius:15px;
+margin-bottom:10px;
+transform:translateX(150%);
+transition:.6s;
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.notification.show{
+transform:translateX(0);
 }
 
 .info-overlay{
 position:fixed;
 inset:0;
-background:rgba(0,0,0,.95);
+background:rgba(0,0,0,0.95);
+backdrop-filter:blur(25px);
 display:none;
 justify-content:center;
 align-items:center;
@@ -77,28 +105,87 @@ display:flex;
 background:#0c0c0c;
 border:1px solid rgba(255,255,255,0.1);
 padding:40px;
-border-radius:25px;
-max-width:600px;
+border-radius:30px;
+max-width:650px;
 width:95%;
 text-align:center;
 }
 
+.spotify-player{
+position:fixed;
+bottom:20px;
+left:20px;
+background:rgba(18,18,18,0.8);
+backdrop-filter:blur(20px);
+border:1px solid rgba(255,255,255,0.1);
+padding:12px 20px;
+border-radius:16px;
+display:flex;
+align-items:center;
+gap:15px;
+z-index:9999;
+}
+
+.play-btn{
+width:40px;
+height:40px;
+background:#1DB954;
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+color:black;
+cursor:pointer;
+}
+
+input[type=range]{
+width:80px;
+accent-color:#1DB954;
+}
+
+.page-section{
+display:none;
+}
+
+.page-section.active{
+display:block;
+}
+
 </style>
+
 </head>
 
 <body>
 
 <div class="glow-bg"></div>
 
-<nav class="glass-nav fixed top-0 w-full z-50">
+<div id="notification-container"></div>
 
-<div class="max-w-6xl mx-auto flex justify-between px-6 py-5">
+<div class="spotify-player">
 
-<div onclick="showPage('home')" class="cursor-pointer font-bold text-xl">
-VayOnur <span class="text-zinc-500">Editions</span>
+<div class="play-btn" id="masterPlay">
+<i class="fas fa-play" id="playIcon"></i>
 </div>
 
-<div class="flex gap-6 text-sm">
+<span class="text-sm font-bold">VayOnur Theme</span>
+
+<input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5">
+
+</div>
+
+<audio id="bgMusic" loop>
+<source src="ses.mp3" type="audio/mpeg">
+</audio>
+
+<nav class="glass-nav fixed top-0 w-full z-50">
+
+<div class="max-w-7xl mx-auto px-8 py-5 flex justify-between">
+
+<div onclick="showPage('home')" class="cursor-pointer font-extrabold text-2xl">
+VayOnur<span class="text-zinc-500"> | Editions</span>
+</div>
+
+<div class="flex gap-10 text-sm uppercase">
 
 <a href="javascript:void(0)" onclick="showPage('home')">Anasayfa</a>
 
@@ -112,33 +199,29 @@ VayOnur <span class="text-zinc-500">Editions</span>
 
 </nav>
 
-<!-- HOME -->
+<main id="home" class="page-section active pt-64 pb-20 text-center">
 
-<main id="home" class="page-section active pt-60 pb-20 text-center">
-
-<h1 class="text-6xl font-extrabold mb-8">
+<h1 class="premium-text text-7xl font-extrabold mb-10">
 Oyun Deneyiminizi Güçlendirin
 </h1>
 
-<button onclick="showPage('products')" class="bg-white text-black px-10 py-4 rounded-xl font-bold">
+<button onclick="showPage('products')" class="bg-white text-black px-10 py-4 rounded-2xl font-bold">
 Ürünlere Git
 </button>
 
 </main>
 
-<!-- PRODUCTS -->
+<main id="products" class="page-section pt-40 pb-20 px-6 max-w-6xl mx-auto">
 
-<main id="products" class="page-section pt-40 pb-20 max-w-6xl mx-auto px-6">
-
-<h1 class="text-5xl font-bold text-center mb-16">
+<h1 class="text-5xl text-center font-black mb-16">
 Ürünler
 </h1>
 
 <div class="grid md:grid-cols-2 gap-8">
 
-<div class="glass-card">
+<div class="glass-card rounded-[2rem] p-10">
 
-<h2 class="text-2xl font-bold mb-4">
+<h2 class="text-2xl font-bold mb-3">
 VayOnur Free Edition
 </h2>
 
@@ -146,15 +229,15 @@ VayOnur Free Edition
 CraftRise için ücretsiz reach macro yazılımı.
 </p>
 
-<button onclick="openModal('free')" class="w-full bg-zinc-900 py-3 rounded-xl">
+<button onclick="openModal('free')" class="w-full py-4 bg-zinc-900 rounded-xl font-bold">
 VirusTotal
 </button>
 
 <a href="https://www.mediafire.com/file/cz451q6czn8wu3i/VayReach.rar/file"
 target="_blank"
-class="block mt-3 text-center bg-white text-black py-3 rounded-xl font-bold">
+class="block text-center mt-3 py-4 bg-white text-black rounded-xl font-bold">
 
-İndir
+İNDİR
 
 </a>
 
@@ -164,32 +247,28 @@ class="block mt-3 text-center bg-white text-black py-3 rounded-xl font-bold">
 
 </main>
 
-<!-- TERMS -->
+<main id="terms" class="page-section pt-40 pb-20 px-6 max-w-4xl mx-auto">
 
-<main id="terms" class="page-section pt-40 pb-20 max-w-4xl mx-auto px-6">
-
-<h1 class="text-4xl font-bold text-center mb-10">
+<h1 class="text-5xl text-center font-bold mb-10">
 Hizmet Şartları
 </h1>
 
-<p class="text-zinc-400">
+<p class="text-zinc-400 text-center">
 Yazılım kullanımı tamamen kullanıcı sorumluluğundadır.
 </p>
 
 </main>
 
-<!-- MODAL -->
-
 <div class="info-overlay" id="modalOverlay">
 
 <div class="info-box hidden" id="freeContent">
 
-<h3 class="text-2xl font-bold mb-4">
-VirusTotal Tarama Sonucu
+<h3 class="text-2xl font-black mb-4">
+VirusTotal Tarama
 </h3>
 
 <p class="text-zinc-400 mb-6">
-Dosyanın güvenlik analizini görmek için aşağıdaki butonu kullanabilirsiniz.
+Dosya güvenlik analizini görmek için aşağıdaki butonu kullanabilirsiniz.
 </p>
 
 <a href="https://www.virustotal.com/gui/file/cc3f1eb779ff1a708e544f7acac90cac3a74a99de16d30d4607fbc505cc74c0d"
@@ -210,10 +289,13 @@ Kapat
 
 <script>
 
+document.addEventListener("contextmenu",e=>e.preventDefault())
+document.addEventListener("selectstart",e=>e.preventDefault())
+
 function showPage(page){
 
-document.querySelectorAll(".page-section").forEach(e=>{
-e.classList.remove("active")
+document.querySelectorAll(".page-section").forEach(p=>{
+p.classList.remove("active")
 })
 
 document.getElementById(page).classList.add("active")
@@ -242,12 +324,68 @@ b.classList.add("hidden")
 
 }
 
-document.addEventListener("contextmenu",e=>e.preventDefault())
+const music=document.getElementById("bgMusic")
+const masterPlay=document.getElementById("masterPlay")
+const playIcon=document.getElementById("playIcon")
+const volumeSlider=document.getElementById("volumeSlider")
 
-document.addEventListener("selectstart",e=>e.preventDefault())
+masterPlay.onclick=()=>{
+
+if(music.paused){
+
+music.play()
+playIcon.classList.replace("fa-play","fa-pause")
+
+}else{
+
+music.pause()
+playIcon.classList.replace("fa-pause","fa-play")
+
+}
+
+}
+
+volumeSlider.oninput=e=>{
+music.volume=e.target.value
+}
+
+const messages=[
+{icon:'fa-discord',text:'discord.gg/HPxQYkWeB7',color:'#5865F2'},
+{icon:'fa-youtube',text:'youtube.com/@vayonur',color:'#FF0000'}
+]
+
+let currentIndex=0
+
+function showNotification(){
+
+const container=document.getElementById("notification-container")
+const data=messages[currentIndex]
+
+const notif=document.createElement("div")
+notif.className="notification"
+
+notif.innerHTML=`<i class="fa-brands ${data.icon}" style="color:${data.color}"></i> <span>${data.text}</span>`
+
+container.appendChild(notif)
+
+setTimeout(()=>notif.classList.add("show"),100)
+
+setTimeout(()=>{
+
+notif.classList.remove("show")
+
+setTimeout(()=>notif.remove(),600)
+
+},5000)
+
+currentIndex=(currentIndex+1)%messages.length
+
+}
+
+setTimeout(showNotification,2000)
+setInterval(showNotification,12000)
 
 </script>
 
 </body>
 </html>
-```
