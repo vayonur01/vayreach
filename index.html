@@ -67,7 +67,7 @@ input[type=range]{width:80px; accent-color:#1DB954; cursor:pointer;}
         <a href="javascript:void(0)" onclick="showPage('home')" id="nav-home" class="nav-link text-white transition">Anasayfa</a>
         <a href="javascript:void(0)" onclick="showPage('products')" id="nav-products" class="nav-link text-zinc-500 hover:text-white transition">Ürünler</a>
         <a href="javascript:void(0)" onclick="showPage('terms')" id="nav-terms" class="nav-link text-zinc-500 hover:text-white transition">Koşullar</a>
-        <a href="https://discord.gg/TwM53AMCh7" target="_blank" class="bg-white text-black px-6 py-2 rounded-full hover:bg-zinc-200 transition">Discord</a>
+        <a href="https://discord.gg/HPxQYkWeB7" target="_blank" class="bg-white text-black px-6 py-2 rounded-full hover:bg-zinc-200 transition">Discord</a>
     </div>
 </div>
 </nav>
@@ -110,7 +110,7 @@ input[type=range]{width:80px; accent-color:#1DB954; cursor:pointer;}
         </div>
         <div class="flex flex-col gap-3 mt-8">
             <button onclick="openModal('free')" class="w-full py-4 bg-zinc-900 rounded-xl font-bold border border-white/5">VİDEO & BİLGİ</button>
-            <a href="https://discord.gg/TwM53AMCh7" target="_blank" class="w-full py-4 bg-white text-black rounded-xl text-center font-bold">İNDİR</a>
+            <a href="https://www.mediafire.com/file/cz451q6czn8wu3i/VayReach.rar/file" target="_blank" class="w-full py-4 bg-white text-black rounded-xl text-center font-bold">İNDİR</a>
         </div>
     </div>
 </div>
@@ -146,9 +146,9 @@ input[type=range]{width:80px; accent-color:#1DB954; cursor:pointer;}
 
 <div class="info-box hidden" id="freeContent">
 <h3 class="text-2xl font-black mb-2 uppercase">VayOnur Free Edition</h3>
-<p class="text-red-500 font-bold text-xs mb-4 uppercase">Önizleme Videosu</p>
+<p class="text-red-500 font-bold text-xs mb-4 uppercase">VirüsTotal</p>
 <div class="video-container">
-<iframe id="ytPlayer" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe id="ytPlayer" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>https://www.virustotal.com/gui/file/cc3f1eb779ff1a708e544f7acac90cac3a74a99de16d30d4607fbc505cc74c0d?nocache=1</iframe>
 </div>
 <p class="text-zinc-400 italic mb-6">Macro, 1-3 Block Reach ve daha fazlası ücretsiz.</p>
 <button class="bg-white text-black px-8 py-3 rounded-xl font-bold w-full" onclick="closeModal()">KAPAT</button>
@@ -156,10 +156,10 @@ input[type=range]{width:80px; accent-color:#1DB954; cursor:pointer;}
 </div>
 
 <script>
-// 1️⃣ Sağ tıklama engelle
+
 document.addEventListener('contextmenu', e=>e.preventDefault());
 
-// 2️⃣ Ctrl+C/X/A/U, F12, Ctrl+Shift+I/J/C engelle
+
 document.addEventListener('keydown', e=>{
     if((e.ctrlKey && ['c','x','a','u'].includes(e.key.toLowerCase()))||
        e.key==='F12'||
@@ -168,7 +168,7 @@ document.addEventListener('keydown', e=>{
     }
 });
 
-// 3️⃣ Metin seçimini engelle
+
 document.addEventListener('selectstart', e=>e.preventDefault());
 
 // SAYFA GEÇİŞİ
@@ -217,7 +217,7 @@ volumeSlider.addEventListener('input', e=>{music.volume=e.target.value; localSto
 setInterval(()=>{if(!music.paused) localStorage.setItem('musicTime', music.currentTime);},1000);
 
 // BİLDİRİM
-const messages=[{icon:'fa-discord',text:'https://discord.gg/TwM53AMCh7',color:'#5865F2'},{icon:'fa-youtube',text:'youtube.com/@vayonur',color:'#FF0000'}];
+const messages=[{icon:'fa-discord',text:'https://discord.gg/HPxQYkWeB7',color:'#5865F2'},{icon:'fa-youtube',text:'youtube.com/@vayonur',color:'#FF0000'}];
 let currentIndex=0;
 function showNotification(){
 const container=document.getElementById('notification-container');
