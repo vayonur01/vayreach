@@ -1,21 +1,23 @@
-
+```html
 <!DOCTYPE html>
 <html lang="tr">
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>VayReach | Ultimate Edition</title>
-<link href="favicon.jpg" rel="icon" type="image/jpeg"/>
+
+<link rel="icon" href="favicon.jpg">
+
 <script src="https://cdn.tailwindcss.com"></script>
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
 
 body{
-font-family:'Plus Jakarta Sans',sans-serif;
 background:#050505;
 color:white;
+font-family:sans-serif;
 overflow-x:hidden;
 user-select:none;
 }
@@ -26,7 +28,7 @@ top:0;
 left:0;
 width:100%;
 height:100%;
-background: radial-gradient(circle at 50% 30%, #111 0%, #050505 100%);
+background:radial-gradient(circle at 50% 30%,#111 0%,#050505 100%);
 z-index:-1;
 }
 
@@ -36,49 +38,51 @@ background:rgba(0,0,0,0.6);
 border-bottom:1px solid rgba(255,255,255,0.05);
 }
 
-.premium-text{
-background:linear-gradient(180deg,#fff 40%,#666 100%);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
+.page-section{
+display:none;
+}
+
+.page-section.active{
+display:block;
 }
 
 .glass-card{
 background:rgba(255,255,255,0.02);
-backdrop-filter:blur(20px);
 border:1px solid rgba(255,255,255,0.05);
-transition:0.4s;
+border-radius:30px;
+padding:30px;
+transition:.3s;
 }
 
 .glass-card:hover{
-border-color:rgba(255,255,255,0.1);
 transform:translateY(-5px);
+border-color:rgba(255,255,255,0.1);
 }
-
-.page-section{display:none;}
-.page-section.active{display:block;}
 
 .info-overlay{
 position:fixed;
 inset:0;
-background:rgba(0,0,0,0.95);
-backdrop-filter:blur(25px);
+background:rgba(0,0,0,.95);
 display:none;
 justify-content:center;
 align-items:center;
 z-index:1000;
 }
 
-.info-overlay.active{display:flex;}
+.info-overlay.active{
+display:flex;
+}
 
 .info-box{
 background:#0c0c0c;
 border:1px solid rgba(255,255,255,0.1);
 padding:40px;
-border-radius:30px;
-max-width:650px;
+border-radius:25px;
+max-width:600px;
 width:95%;
 text-align:center;
 }
+
 </style>
 </head>
 
@@ -87,24 +91,32 @@ text-align:center;
 <div class="glow-bg"></div>
 
 <nav class="glass-nav fixed top-0 w-full z-50">
-<div class="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
 
-<div onclick="showPage('home')" class="cursor-pointer font-extrabold text-2xl">
-VayOnur<span class="text-zinc-500"> | sex Editions</span>
+<div class="max-w-6xl mx-auto flex justify-between px-6 py-5">
+
+<div onclick="showPage('home')" class="cursor-pointer font-bold text-xl">
+VayOnur <span class="text-zinc-500">Editions</span>
 </div>
 
-<div class="flex gap-8 text-sm uppercase">
-<a href="javascript:void(0)" onclick="showPage('home')" id="nav-home">Anasayfa</a>
-<a href="javascript:void(0)" onclick="showPage('products')" id="nav-products">Ürünler</a>
-<a href="javascript:void(0)" onclick="showPage('terms')" id="nav-terms">Koşullar</a>
+<div class="flex gap-6 text-sm">
+
+<a href="javascript:void(0)" onclick="showPage('home')">Anasayfa</a>
+
+<a href="javascript:void(0)" onclick="showPage('products')">Ürünler</a>
+
+<a href="javascript:void(0)" onclick="showPage('terms')">Koşullar</a>
+
 </div>
 
 </div>
+
 </nav>
 
-<main id="home" class="page-section active pt-64 pb-20 text-center">
+<!-- HOME -->
 
-<h1 class="premium-text text-6xl font-extrabold mb-10">
+<main id="home" class="page-section active pt-60 pb-20 text-center">
+
+<h1 class="text-6xl font-extrabold mb-8">
 Oyun Deneyiminizi Güçlendirin
 </h1>
 
@@ -114,67 +126,78 @@ Oyun Deneyiminizi Güçlendirin
 
 </main>
 
-<main id="products" class="page-section pt-40 pb-20 px-6 max-w-6xl mx-auto">
+<!-- PRODUCTS -->
 
-<h1 class="text-5xl font-black mb-16 text-center">
+<main id="products" class="page-section pt-40 pb-20 max-w-6xl mx-auto px-6">
+
+<h1 class="text-5xl font-bold text-center mb-16">
 Ürünler
 </h1>
 
 <div class="grid md:grid-cols-2 gap-8">
 
-<div class="glass-card p-8 rounded-3xl">
+<div class="glass-card">
 
-<h2 class="text-2xl font-bold mb-3">
+<h2 class="text-2xl font-bold mb-4">
 VayOnur Free Edition
 </h2>
 
 <p class="text-zinc-400 mb-6">
-CraftRise için ücretsiz reach macro.
+CraftRise için ücretsiz reach macro yazılımı.
 </p>
 
 <button onclick="openModal('free')" class="w-full bg-zinc-900 py-3 rounded-xl">
-VIRUSTOTAL
+VirusTotal
 </button>
 
 <a href="https://www.mediafire.com/file/cz451q6czn8wu3i/VayReach.rar/file"
 target="_blank"
 class="block mt-3 text-center bg-white text-black py-3 rounded-xl font-bold">
-İNDİR
+
+İndir
+
 </a>
 
 </div>
 
 </div>
+
 </main>
 
-<main id="terms" class="page-section pt-40 pb-20 px-6 max-w-4xl mx-auto">
+<!-- TERMS -->
 
-<h1 class="text-4xl font-bold mb-10 text-center">
+<main id="terms" class="page-section pt-40 pb-20 max-w-4xl mx-auto px-6">
+
+<h1 class="text-4xl font-bold text-center mb-10">
 Hizmet Şartları
 </h1>
 
 <p class="text-zinc-400">
-Yazılım kullanımı tamamen kullanıcının sorumluluğundadır.
+Yazılım kullanımı tamamen kullanıcı sorumluluğundadır.
 </p>
 
 </main>
+
+<!-- MODAL -->
 
 <div class="info-overlay" id="modalOverlay">
 
 <div class="info-box hidden" id="freeContent">
 
 <h3 class="text-2xl font-bold mb-4">
-VirusTotal Tarama
+VirusTotal Tarama Sonucu
 </h3>
 
 <p class="text-zinc-400 mb-6">
-Dosyanın güvenlik analizini görmek için aşağıdaki butona basın.
+Dosyanın güvenlik analizini görmek için aşağıdaki butonu kullanabilirsiniz.
 </p>
 
 <a href="https://www.virustotal.com/gui/file/cc3f1eb779ff1a708e544f7acac90cac3a74a99de16d30d4607fbc505cc74c0d"
 target="_blank"
 class="bg-white text-black px-8 py-3 rounded-xl font-bold">
+
 VirusTotal Aç
+
 </a>
 
 <button onclick="closeModal()" class="block w-full mt-6 bg-zinc-800 py-3 rounded-xl">
@@ -187,13 +210,15 @@ Kapat
 
 <script>
 
-function showPage(id){
+function showPage(page){
 
-document.querySelectorAll('.page-section').forEach(p=>{
-p.classList.remove('active')
+document.querySelectorAll(".page-section").forEach(e=>{
+e.classList.remove("active")
 })
 
-document.getElementById(id).classList.add('active')
+document.getElementById(page).classList.add("active")
+
+window.scrollTo(0,0)
 
 }
 
@@ -219,8 +244,10 @@ b.classList.add("hidden")
 
 document.addEventListener("contextmenu",e=>e.preventDefault())
 
+document.addEventListener("selectstart",e=>e.preventDefault())
+
 </script>
 
 </body>
 </html>
-
+```
